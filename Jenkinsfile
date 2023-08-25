@@ -23,7 +23,7 @@ pipeline {
                     sh """
 			${scannerHome}/bin/sonar-scanner \
 			-Dsonar.projectKey=django-project  \
-			-Dsonar.sources=.\
+			-Dsonar.sources=. -X\
 		    """
                 }
             }
