@@ -23,6 +23,11 @@ pipeline {
                   -Dsonar.token=sqp_17a690f43aefd8b59a109dcb1e16530a1f2e33cd'''    
             }
         }
+        stage('build image'){
+            steps{
+                sh 'docker build -t image:${BUILD_NUMBER} -f ./Dockerfile .'
+            }
+        }
     }
 }
 
