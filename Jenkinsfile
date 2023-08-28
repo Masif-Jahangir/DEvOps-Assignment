@@ -1,6 +1,10 @@
 pipeline {
     agent any
-
+    
+    environment{
+    	DOCKERHUB_CREDENTIALS = credentials('jenkins-dockerhub')
+    }
+    
     stages {
     
         stage('checkout') {
@@ -23,19 +27,32 @@ pipeline {
                   -Dsonar.token=sqp_17a690f43aefd8b59a109dcb1e16530a1f2e33cd'''    
             }
         }
+        
         stage('build image'){
             steps{
                 sh 'docker build -t image:${BUILD_NUMBER} -f ./Dockerfile .'
             }
         }
-        stage('DockerHub'){
-            steps{
-            	withDockerRegistry(credentialsId: 'jenkins-dockerhub', url: 'https://index.docker.io/v1/') {
-                sh 'docker tag image:${BUILD_NUMBER} masifjahangir1/devops-assignment:${BUILD_NUMBER}'
-                sh 'docker push masifjahangir1/devops-assignment:${BUILD_NUMBER}'
-                }
-            }
+        
+        stage('DockerHub-Login'){
+        	steps{
+        		sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u DOCKERHUB_CREDENTIALS_USR --password-stdin'
+        	}
         }
+        
+        stage('DockerHub-Push'){
+        	steps{
+        		sh 'docker tag image:${BUILD_NUMBER} masifjahangir1/devops-assignment:${BUILD_NUMBER}'
+                	sh 'docker push masifjahangir1/devops-assignment:${BUILD_NUMBER}'
+        	}
+        }
+        
+    }
+    
+    post{
+    	always{
+    		sh'docker logout'
+    	}
     }
 }
 
