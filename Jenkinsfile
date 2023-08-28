@@ -25,7 +25,7 @@ pipeline {
         }
         stage('build image'){
             steps{
-                sh 'docker build -t image:${BUILD_NUMBER} -f ./Dockerfile .'
+                sh 'sudo docker build -t image:${BUILD_NUMBER} -f ./Dockerfile .'
             }
         }
     }
