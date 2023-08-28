@@ -28,6 +28,14 @@ pipeline {
                 sh 'docker build -t image:${BUILD_NUMBER} -f ./Dockerfile .'
             }
         }
+        stage('DockerHub'){
+            steps{
+            	withDockerRegistry(credentialsId: 'jenkins-dockerhub', url: 'https://index.docker.io/v1/') {
+                sh 'docker tag image:${BUILD_NUMBER} masifjahangir1/devops-assignment:${BUILD_NUMBER}'
+                sh 'docker push masifjahangir1/devops-assignment:${BUILD_NUMBER}'
+                }
+            }
+        }
     }
 }
 
